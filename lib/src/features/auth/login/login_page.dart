@@ -1,16 +1,20 @@
+import 'dart:math';
+
 import 'package:barbershop/src/core/ui/constants.dart';
 import 'package:barbershop/src/core/ui/helpers/form_helper.dart';
+import 'package:barbershop/src/features/auth/login/login_vm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:validatorless/validatorless.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -24,6 +28,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final LoginVm(:login) = ref.watch(loginVmProvider.notifier);
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Form(
@@ -93,7 +99,15 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           const SizedBox(height: 25),
                           ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                switch (formKey.currentState?.validate()) {
+                                  case (false || null):
+                                    // mostrar uma mensagem de erro
+                                    break;
+                                  case true:
+                                    login(emailController.text, passwordController.text);
+                                }
+                              },
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(double.infinity, 50),
                               ),
