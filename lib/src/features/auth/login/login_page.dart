@@ -1,7 +1,7 @@
-import 'dart:math';
-
 import 'package:barbershop/src/core/ui/constants.dart';
 import 'package:barbershop/src/core/ui/helpers/form_helper.dart';
+import 'package:barbershop/src/core/ui/helpers/messages.dart';
+import 'package:barbershop/src/features/auth/login/login_state.dart';
 import 'package:barbershop/src/features/auth/login/login_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,6 +29,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final LoginVm(:login) = ref.watch(loginVmProvider.notifier);
+
+    ref.listen(loginVmProvider, (prevState, currentState) {
+      switch (currentState) {
+        case LoginState(status: LoginStateStatus.initial):
+          break;
+        case LoginState(status: LoginStateStatus.error, :final errorMessage?):
+          Messages.showError(errorMessage, context);
+          break;
+        case LoginState(status: LoginStateStatus.error):
+          Messages.showError('Erro desconhecido', context);
+          break;
+        case LoginState(status: LoginStateStatus.admLogin):
+          break;
+        case LoginState(status: LoginStateStatus.employeeLogin):
+          break;
+      }
+    });
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -102,7 +119,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               onPressed: () {
                                 switch (formKey.currentState?.validate()) {
                                   case (false || null):
-                                    // mostrar uma mensagem de erro
+                                    Messages.showError('Preencha os campos corretamente', context);
                                     break;
                                   case true:
                                     login(emailController.text, passwordController.text);
