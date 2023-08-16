@@ -1,5 +1,7 @@
 import 'package:barbershop/src/core/ui/constants.dart';
+import 'package:barbershop/src/core/ui/helpers/form_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:validatorless/validatorless.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -51,6 +53,12 @@ class _LoginPageState extends State<LoginPage> {
                             width: 200,
                           ),
                           TextFormField(
+                            controller: emailController,
+                            validator: Validatorless.multiple([
+                              Validatorless.required('E-mail obrigatório'),
+                              Validatorless.email('E-mail inválido'),
+                            ]),
+                            onTapOutside: (value) => context.unFocus(), // context personalizado
                             decoration: const InputDecoration(
                               label: Text('E-mail'),
                               hintText: 'E-mail',
@@ -61,6 +69,13 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           const SizedBox(height: 20),
                           TextFormField(
+                            controller: passwordController,
+                            validator: Validatorless.multiple([
+                              Validatorless.required('Senha é obrigatório'),
+                              Validatorless.min(6, 'Senha deve ter no mínimo 6 caracteres')
+                            ]),
+                            onTapOutside: (value) => context.unFocus(), // context personalizado
+                            obscureText: true,
                             decoration: const InputDecoration(
                               label: Text('Senha'),
                               hintText: 'Senha',
