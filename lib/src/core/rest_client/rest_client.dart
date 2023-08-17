@@ -1,3 +1,4 @@
+import 'package:barbershop/src/core/rest_client/interceptors/auth_interceptors.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 
@@ -10,7 +11,10 @@ final class RestClient extends DioForNative {
             receiveTimeout: const Duration(seconds: 60),
           ),
         ) {
-    interceptors.addAll([LogInterceptor(responseBody: true, requestBody: true)]);
+    interceptors.addAll([
+      LogInterceptor(responseBody: true, requestBody: true),
+      AuthInterceptor(),
+    ]);
   }
 
   RestClient get auth {
